@@ -996,6 +996,7 @@
     "officialHint": "💡 官方供应商使用浏览器登录，无需配置 API Key",
     "getApiKey": "获取 API Key",
     "partnerPromotion": {
+      "primerouter": "PrimeRouter 中转站：注册后在控制台「令牌」生成 sk- 密钥，填入即可使用 Claude、GPT 等优先大模型，按量计费、无需订阅。",
       "packycode": "PackyCode 是 CC Switch 的官方合作伙伴，使用此链接注册并在充值时填写 \"cc-switch\" 优惠码，可以享受9折优惠",
       "apikeyfun": "APIKEY.FUN 为 CC Switch 的用户提供了特别优惠，通过专属链接注册，可享受最高充值永久 95 折优惠。",
       "apinebula": "APINEBULA 为 CC Switch 用户提供特别优惠：使用专属链接注册并在充值时填写 \"ccswitch\" 优惠码，可享九折优惠。",

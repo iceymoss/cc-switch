@@ -2,6 +2,7 @@
  * 预设供应商配置模板
  */
 import { ProviderCategory } from "../types";
+import { applyDistributionWhitelist } from "./distributionWhitelist";
 
 export interface TemplateValueConfig {
   label: string;
@@ -73,7 +74,7 @@ export interface ProviderPreset {
   modelsUrl?: string;
 }
 
-export const providerPresets: ProviderPreset[] = [
+const rawProviderPresets: ProviderPreset[] = [
   {
     name: "Claude Official",
     websiteUrl: "https://www.anthropic.com/claude-code",
@@ -89,6 +90,32 @@ export const providerPresets: ProviderPreset[] = [
     },
     icon: "anthropic",
     iconColor: "#D4915D",
+  },
+  {
+    // PrimeRouter 中转站（发行版置顶预设）：用户仅需填入 sk- key
+    name: "PrimeRouter",
+    websiteUrl: "https://www.primerouter.xyz",
+    apiKeyUrl: "https://www.primerouter.xyz",
+    apiKeyField: "ANTHROPIC_AUTH_TOKEN",
+    settingsConfig: {
+      env: {
+        ANTHROPIC_BASE_URL: "https://www.primerouter.xyz",
+        ANTHROPIC_AUTH_TOKEN: "",
+        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1",
+        ANTHROPIC_DEFAULT_SONNET_MODEL: "claude-sonnet-4-6",
+        ANTHROPIC_DEFAULT_OPUS_MODEL: "claude-opus-4-7",
+      },
+    },
+    category: "aggregator",
+    isPartner: true,
+    primePartner: true,
+    partnerPromotionKey: "primerouter",
+    theme: {
+      backgroundColor: "#6366F1",
+      textColor: "#FFFFFF",
+    },
+    icon: "primerouter",
+    iconColor: "#6366F1",
   },
   {
     name: "Shengsuanyun",
@@ -1256,3 +1283,7 @@ export const providerPresets: ProviderPreset[] = [
     iconColor: "#FF9900",
   },
 ];
+
+// 发行版白名单：仅保留 Claude Official + PrimeRouter 可见，其余标记 hidden
+export const providerPresets: ProviderPreset[] =
+  applyDistributionWhitelist(rawProviderPresets);

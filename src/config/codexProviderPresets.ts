@@ -8,6 +8,7 @@ import type {
   CodexChatReasoning,
 } from "../types";
 import type { PresetTheme } from "./claudeProviderPresets";
+import { applyDistributionWhitelist } from "./distributionWhitelist";
 
 export interface CodexProviderPreset {
   name: string;
@@ -20,6 +21,7 @@ export interface CodexProviderPreset {
   isOfficial?: boolean; // 标识是否为官方预设
   isPartner?: boolean; // 标识是否为商业合作伙伴
   primePartner?: boolean; // 置顶合作伙伴（顶级）：徽章显示为心形
+  hidden?: boolean; // 是否在 UI 中隐藏该预设（预设仍存在，仅不在列表中显示）
   partnerPromotionKey?: string; // 合作伙伴促销信息的 i18n key
   category?: ProviderCategory; // 新增：分类
   isCustomTemplate?: boolean; // 标识是否为自定义模板
@@ -85,7 +87,7 @@ function modelCatalog(
   );
 }
 
-export const codexProviderPresets: CodexProviderPreset[] = [
+const rawCodexProviderPresets: CodexProviderPreset[] = [
   {
     name: "OpenAI Official",
     websiteUrl: "https://chatgpt.com/codex",
@@ -100,6 +102,35 @@ export const codexProviderPresets: CodexProviderPreset[] = [
     },
     icon: "openai",
     iconColor: "#00A67E",
+  },
+  {
+    // PrimeRouter 中转站（发行版置顶预设）：用户仅需填入 sk- key
+    name: "PrimeRouter",
+    websiteUrl: "https://www.primerouter.xyz",
+    apiKeyUrl: "https://www.primerouter.xyz",
+    auth: generateThirdPartyAuth(""),
+    config: `model_provider = "custom"
+model = "claude-sonnet-4-6"
+model_reasoning_effort = "high"
+disable_response_storage = true
+
+[model_providers.custom]
+name = "PrimeRouter"
+base_url = "https://www.primerouter.xyz/v1"
+wire_api = "chat"
+requires_openai_auth = true`,
+    endpointCandidates: ["https://www.primerouter.xyz/v1"],
+    apiFormat: "openai_chat",
+    category: "aggregator",
+    isPartner: true,
+    primePartner: true,
+    partnerPromotionKey: "primerouter",
+    theme: {
+      backgroundColor: "#6366F1",
+      textColor: "#FFFFFF",
+    },
+    icon: "primerouter",
+    iconColor: "#6366F1",
   },
   {
     name: "Shengsuanyun",
@@ -1312,3 +1343,7 @@ base_url = "https://cc-api.pipellm.ai/v1"`,
     category: "aggregator",
   },
 ];
+
+// 发行版白名单：仅保留 OpenAI Official + PrimeRouter 可见，其余标记 hidden
+export const codexProviderPresets: CodexProviderPreset[] =
+  applyDistributionWhitelist(rawCodexProviderPresets);

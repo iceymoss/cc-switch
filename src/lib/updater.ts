@@ -27,6 +27,18 @@ export async function checkForUpdate(
 ): Promise<
   { status: "up-to-date" } | { status: "available"; info: UpdateInfo }
 > {
+  // 发行版（PrimeRouter 二开）已关闭自动更新：始终视为最新，
+  // 不调用 tauri updater 插件、不访问 GitHub 更新源，用户从官网手动下载。
+  void opts;
+  return { status: "up-to-date" };
+}
+
+// 上游自动更新实现（发行版已停用，保留以便跟随上游 rebase）
+export async function checkForUpdateUpstream(
+  opts: CheckOptions = {},
+): Promise<
+  { status: "up-to-date" } | { status: "available"; info: UpdateInfo }
+> {
   // 动态引入，避免在未安装插件时导致打包期问题
   const { check } = await import("@tauri-apps/plugin-updater");
 
